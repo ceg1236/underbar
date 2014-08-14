@@ -184,19 +184,19 @@ var _ = {};
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
     
-    var previousValue;
-    arguments.length<3 ? previousValue = collection[0] :
-                          previousValue = accumulator;
+    var reducedValue;
+    arguments.length<3 ? reducedValue = collection[0] :
+                              reducedValue = accumulator;
     if (Array.isArray(collection)) {                      
       for (var i = 0; i<collection.length; i++) {
-        previousValue = iterator(previousValue, collection[i]);
+        reducedValue = iterator(reducedValue, collection[i]);
       }
     } else {
       for(var key in collection) {
-        previousValue = iterator(previousValue, collection[key]);
+        reducedValue = iterator(reducedValue, collection[key]);
       }
     }
-    return previousValue;
+    return reducedValue;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -215,7 +215,10 @@ var _ = {};
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
-    if(arguments.length<2) {
+
+    // Non reduce() solution: 
+    
+    /*if(arguments.length<2) {
       for(var i = 0; i<collection.length; i++) {
         return collection[i]; 
       }
@@ -226,13 +229,13 @@ var _ = {};
         }
       }
     }
-    return true;
+    return true;*/
 
-    /*return _.reduce(collection, function(item) {
-      if(!iterator(item)) {
-        return false;
-      } 
-    }, true);*/
+    // Using reduce()
+    return _.reduce(collection, function(test, val) {
+      if(iterator===undefined) {return test;}
+      return !!iterator(val) && test;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
